@@ -4,7 +4,7 @@
 from models.base_model import BaseModel
 
 
-class Place(baseModel):
+class Place(BaseModel):
     """Place class."""
 
     pass
