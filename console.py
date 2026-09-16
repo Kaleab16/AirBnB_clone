@@ -48,7 +48,12 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        args = shlex.split(arg)
+        try:
+            args = shlex.split(arg)
+        except ValueError:
+            print("** class name missing **")
+            return
+
         class_name = args[0]
 
         if class_name not in self.classes:
@@ -65,7 +70,15 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        args = shlex.split(arg)
+        try:
+            args = shlex.split(arg)
+        except ValueError:
+            args = arg.split()
+
+        if not args:
+            print("** class name missing **")
+            return
+
         class_name = args[0]
 
         if class_name not in self.classes:
@@ -91,7 +104,15 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        args = shlex.split(arg)
+        try:
+            args = shlex.split(arg)
+        except ValueError:
+            args = arg.split()
+
+        if not args:
+            print("** class name missing **")
+            return
+
         class_name = args[0]
 
         if class_name not in self.classes:
@@ -113,7 +134,10 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """Show all instances or instances of a class."""
-        args = shlex.split(arg)
+        try:
+            args = shlex.split(arg)
+        except ValueError:
+            args = arg.split()
 
         if args and args[0] not in self.classes:
             print("** class doesn't exist **")
@@ -133,7 +157,15 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        args = shlex.split(arg)
+        try:
+            args = shlex.split(arg)
+        except ValueError:
+            args = arg.split()
+
+        if not args:
+            print("** class name missing **")
+            return
+
         class_name = args[0]
 
         if class_name not in self.classes:
