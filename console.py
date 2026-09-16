@@ -6,6 +6,12 @@ import shlex
 
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -13,12 +19,22 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = '(hbnb) '
 
+    classes = {
+        "BaseModel": BaseModel,
+        "User": User,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Place": Place,
+        "Review": Review
+    }
+
     def do_quit(self, arg):
-        """Quit command to exit the program."""
+        """Quit command."""
         return True
 
     def do_EOF(self, arg):
-        """EOF command to exit the program."""
+        """EOF command."""
         print()
         return True
 
@@ -27,30 +43,32 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Create a new instance of BaseModel."""
+        """Create a new instance."""
         if not arg:
             print("** class name missing **")
             return
 
         args = shlex.split(arg)
+        class_name = args[0]
 
-        if args[0] != "BaseModel":
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
-        new_instance = BaseModel()
+        new_instance = self.classes[class_name]()
         new_instance.save()
         print(new_instance.id)
 
     def do_show(self, arg):
-        """Show an instance based on class name and id."""
+        """Show an instance."""
         if not arg:
             print("** class name missing **")
             return
 
         args = shlex.split(arg)
+        class_name = args[0]
 
-        if args[0] != "BaseModel":
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
@@ -58,7 +76,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        key = "BaseModel." + args[1]
+        key = "{}.{}".format(class_name, args[1])
         instance = storage.all().get(key)
 
         if instance is None:
@@ -68,14 +86,15 @@ class HBNBCommand(cmd.Cmd):
         print(instance)
 
     def do_destroy(self, arg):
-        """Delete an instance based on class name and id."""
+        """Destroy an instance."""
         if not arg:
             print("** class name missing **")
             return
 
         args = shlex.split(arg)
+        class_name = args[0]
 
-        if args[0] != "BaseModel":
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
@@ -83,10 +102,9 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        key = "BaseModel." + args[1]
-        instance = storage.all().get(key)
+        key = "{}.{}".format(class_name, args[1])
 
-        if instance is None:
+        if storage.all().get(key) is None:
             print("** no instance found **")
             return
 
@@ -94,29 +112,31 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, arg):
-        """Print all instances or all instances of BaseModel."""
+        """Show all instances or instances of a class."""
         args = shlex.split(arg)
 
-        if args and args[0] != "BaseModel":
+        if args and args[0] not in self.classes:
             print("** class doesn't exist **")
             return
 
         instances = []
 
         for instance in storage.all().values():
-            instances.append(str(instance))
+            if not args or instance.__class__.__name__ == args[0]:
+                instances.append(str(instance))
 
         print(instances)
 
     def do_update(self, arg):
-        """Update an instance based on class name and id."""
+        """Update an instance."""
         if not arg:
             print("** class name missing **")
             return
 
         args = shlex.split(arg)
+        class_name = args[0]
 
-        if args[0] != "BaseModel":
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
@@ -124,7 +144,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        key = "BaseModel." + args[1]
+        key = "{}.{}".format(class_name, args[1])
         instance = storage.all().get(key)
 
         if instance is None:
