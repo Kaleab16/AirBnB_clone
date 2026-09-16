@@ -11,19 +11,25 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd):
     """Command interpreter for the AirBnB project."""
 
-    prompt = '(hbnb)'
+    prompt = '(hbnb) '
 
-    def do_quit(self,arg):
-        """Quit command to exist the program."""
+    def do_quit(self, arg):
+        """Quit command to exit the program."""
+        return True
+
+    def do_EOF(self, arg):
+        """EOF command to exit the program."""
         print()
         return True
+
     def emptyline(self):
-        """Do nothing when an empty line is entered"""
+        """Do nothing when an empty line is entered."""
         pass
+
     def do_create(self, arg):
         """Create a new instance of BaseModel."""
         if not arg:
-            print("** class name missing**")
+            print("** class name missing **")
             return
 
         args = shlex.split(arg)
@@ -31,7 +37,6 @@ class HBNBCommand(cmd.Cmd):
         if args[0] != "BaseModel":
             print("** class doesn't exist **")
             return
-
 
         new_instance = BaseModel()
         new_instance.save()
@@ -99,8 +104,7 @@ class HBNBCommand(cmd.Cmd):
         instances = []
 
         for instance in storage.all().values():
-            if not args or args[0] == "BaseModel":
-                instances.append(str(instance))
+            instances.append(str(instance))
 
         print(instances)
 
@@ -149,5 +153,6 @@ class HBNBCommand(cmd.Cmd):
         setattr(instance, attribute_name, attribute_value)
         instance.save()
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     HBNBCommand().cmdloop()
